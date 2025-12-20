@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iky SensiFF</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #141414 50%, #1e1e1e 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Particle Background */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        /* Crosshair Overlay */
+        .crosshair-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            display: none;
+        }
+
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            z-index: 10000;
+        }
+
+        .crosshair::before, .crosshair::after {
+            content: '';
+            position: absolute;
+            background-color: #00ffcc;
+            border-radius: 2px;
+        }
+
+        .crosshair::before {
+            width: 30px;
+            height: 4px;
+            top: 13px;
+            left: 0;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
+        }
+
+        .crosshair::after {
+            width: 4px;
+            height: 30px;
+            left: 13px;
+            top: 0;
+            box-shadow: 0 0 10px rgba(0, 255, 204, 0.7);
+        }
+
+        .crosshair-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background-color: #ff0066;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px rgba(255, 0, 102, 0.9);
+        }
+
+        /* Login Screen */
+        .login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.5s ease;
+        }
+
+        .login-container {
+            background: rgba(30, 30, 40, 0.9);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 200, 255, 0.3);
+            text-align: center;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                box-shadow: 0 0 20px rgba(0, 150, 255, 0.3);
+            }
+            to {
+                box-shadow: 0 0 30px rgba(0, 200, 255, 0.5);
+            }
+        }
+
+        .login-title {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, #00ccff, #0099ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(0, 150, 255, 0.5);
+        }
+
+        .login-subtitle {
+            font-size: 1rem;
+            margin-bottom: 30px;
+            color: #a0a0c0;
+        }
+
+        .password-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .password-input {
+            width: 100%;
+            padding: 18px 20px;
+            background: rgba(20, 20, 30, 0.9);
+            border: 2px solid #00a8ff;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            outline: none;
+            transition: all 0.3s;
+            letter-spacing: 2px;
+        }
+
+        .password-input:focus {
+            border-color: #00ffcc;
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.5);
+            transform: scale(1.02);
+        }
+
+        .password-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #00a8ff;
+            cursor: pointer;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00a8ff 0%, #0097e6 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .login-btn:hover {
+            background: linear-gradient(135deg, #0097e6 0%, #00a8ff 100%);
+            box-shadow: 0 0 25px rgba(0, 168, 255, 0.7);
+            transform: translateY(-3px);
+        }
+
+        .login-btn:active {
+            transform: translateY(1px);
+        }
+
+        .login-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .login-btn:hover::after {
+            left: 100%;
+        }
+
+        .error-message {
+            color: #ff4757;
+            margin-top: 15px;
+            display: none;
+            font-size: 0.9rem;
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0%, 100% {transform: translateX(0);}
+            20%, 60% {transform: translateX(-5px);}
+            40%, 80% {transform: translateX(5px);}
+        }
+
+        /* Game Selection Screen (Setelah Login) */
+        .game-selection-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            transition: opacity 0.5s ease;
+        }
+
+        .game-selection-container {
+            background: rgba(30, 30, 40, 0.9);
+            border-radius: 20px;
+            padding: 50px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 200, 255, 0.3);
+            text-align: center;
+            animation: glow 2s infinite alternate;
+        }
+
+        .game-selection-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #00ccff, #0099ff);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: bold;
+            text-shadow: 0 0 15px rgba(0, 150, 255, 0.5);
+        }
+
+        .game-selection-subtitle {
+            font-size: 1.1rem;
+            margin-bottom: 40px;
+            color: #a0a0c0;
+            line-height: 1.6;
+        }
+
+        .game-options {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .game-option {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(20, 20, 30, 0.8);
+            border: 2px solid rgba(0, 150, 255, 0.3);
+            border-radius: 15px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-option:hover {
+            border-color: #00a8ff;
+            background: rgba(0, 168, 255, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .game-option.active {
+            border-color: #00ffcc;
+            background: linear-gradient(135deg, rgba(0, 168, 255, 0.2), rgba(0, 255, 204, 0.1));
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
+        }
+
+        .game-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            color: #00a8ff;
+        }
+
+        .game-info {
+            text-align: left;
+            flex: 1;
+        }
+
+        .game-name {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .game-description {
+            font-size: 0.9rem;
+            color: #a0a0c0;
+        }
+
+        .game-select-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #00a8ff 0%, #0097e6 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.3rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .game-select-btn:hover {
+            background: linear-gradient(135deg, #0097e6 0%, #00a8ff 100%);
+            box-shadow: 0 0 25px rgba(0, 168, 255, 0.7);
+            transform: translateY(-3px);
+        }
+
+        .game-select-btn:active {
+            transform: translateY(1px);
+        }
+
+        /* Main Dashboard */
+        .dashboard {
+            display: none;
+            padding: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 30px;
+            background: rgba(25, 25, 35, 0.8);
+            border-radius: 20px;
+            border: 2px solid rgba(0, 150, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .header:hover::before {
+            left: 100%;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(to right, #00ccff, #00ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 200, 255, 0.5);
+        }
+
+        .header p {
+            color: #a0a0c0;
+            font-size: 1.1rem;
+            margin: 8px 0;
+        }
+
+        .features-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            background: rgba(30, 30, 40, 0.9);
+            border-radius: 15px;
+            padding: 25px;
+            border: 2px solid rgba(0, 150, 255, 0.2);
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            border-color: #00a8ff;
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #00a8ff, #00ffcc);
+        }
+
+        .feature-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-right: 20px;
+            background: linear-gradient(135deg, #00a8ff, #00ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature-title {
+            font-size: 1.6rem;
+            font-weight: bold;
+            background: linear-gradient(to right, #00ccff, #00ffcc);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .feature-description {
+            color: #b0b0d0;
+            margin-bottom: 25px;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* Aimbot Percentage Slider */
+        .aimbot-slider-container {
+            margin-bottom: 25px;
+            display: none;
+        }
+
+        .aimbot-slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            color: #a0a0c0;
+            font-size: 0.9rem;
+        }
+
+        .aimbot-slider {
+            width: 100%;
+            height: 10px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .aimbot-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00a8ff, #00ffcc);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(0, 200, 255, 0.7);
+            border: 2px solid white;
+        }
+
+        .aimbot-percentage-display {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Toggle Switch */
+        .toggle-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 35px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, #333 0%, #555 100%);
+            transition: .4s;
+            border-radius: 34px;
+            border: 2px solid #444;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 27px;
+            width: 27px;
+            left: 4px;
+            bottom: 3px;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            transition: .4s;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        input:checked + .toggle-slider {
+            background: linear-gradient(135deg, #00a8ff 0%, #0097e6 100%);
+            border-color: #00a8ff;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(33px);
+            background: white;
+        }
+
+        .toggle-status {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: #888;
+            transition: color 0.3s;
+        }
+
+        .toggle-status.active {
+            color: #00ffcc;
+            text-shadow: 0 0 10px rgba(0, 255, 204, 0.5);
+        }
+
+        /* Crosshair Feature Card */
+        .crosshair-card .toggle-container {
+            margin-bottom: 15px;
+        }
+
+        .crosshair-info {
+            background: rgba(20, 20, 30, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #a0a0c0;
+            border-left: 3px solid #00ffcc;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 25px;
+            color: #777;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 30px;
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 15px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .login-container,
+            .game-selection-container {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .header {
+                padding: 20px;
+            }
+            
+            .feature-card {
+                padding: 20px;
+            }
+            
+            .game-option {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .game-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+            
+            .game-info {
+                text-align: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .feature-card {
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .feature-card:nth-child(1) { animation-delay: 0.1s; }
+        .feature-card:nth-child(2) { animation-delay: 0.2s; }
+        .feature-card:nth-child(3) { animation-delay: 0.3s; }
+        .feature-card:nth-child(4) { animation-delay: 0.4s; }
+        .feature-card:nth-child(5) { animation-delay: 0.5s; }
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div class="particles" id="particles"></div>
+    
+    <!-- Crosshair Overlay -->
+    <div class="crosshair-overlay" id="crosshairOverlay">
+        <div class="crosshair">
+            <div class="crosshair-dot"></div>
+        </div>
+    </div>
+
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <h1 class="login-title">Iky SensiFF</h1>
+            <p class="login-subtitle">Silakan Masukan Password.</p>
+            
+            <div class="password-container">
+                <input type="password" class="password-input" id="passwordInput" placeholder="">
+                <div class="password-icon" id="togglePassword">
+                    <i class="fas fa-eye"></i>
+                </div>
+            </div>
+            
+            <button class="login-btn" id="loginBtn">
+                <i class="fas fa-sign-in-alt"></i> LOGIN
+            </button>
+            <div class="error-message" id="errorMsg">Password salah! Coba lagi.</div>
+            
+            <div style="margin-top: 30px; color: #666; font-size: 0.9rem;">
+                <p></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Selection Screen (Setelah Login) -->
+    <div class="game-selection-screen" id="gameSelectionScreen">
+        <div class="game-selection-container">
+            <h1 class="game-selection-title">Pilih Versi Free Fire</h1>
+            <p class="game-selection-subtitle">Pilih versi Free Fire yang akan Anda gunakan dengan fitur-fitur SensiFF</p>
+            
+            <div class="game-options">
+                <div class="game-option active" id="ffNormalOption">
+                    <div class="game-icon">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-name">Free Fire Biasa</div>
+                        <div class="game-description"></div>
+                    </div>
+                </div>
+                
+                <div class="game-option" id="ffMaxOption">
+                    <div class="game-icon">
+                        <i class="fas fa-fire-alt"></i>
+                    </div>
+                    <div class="game-info">
+                        <div class="game-name">Free Fire MAX</div>
+                        <div class="game-description"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="game-select-btn" id="gameSelectBtn">
+                <i class="fas fa-play-circle"></i> LANJUTKAN KE DASHBOARD
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <div class="header">
+            <h1 id="dashboardTitle">Iky SensiFF V1</h1>
+            <p id="gameVersionText">Aplikasi ini membantu untuk bermain Free Fire Biasa</p>
+            <p id="versionInfo">Versi: Free Fire Biasa | Crosshair: OFF | Aimbot: OFF</p>
+        </div>
+        
+        <div class="features-container">
+            <!-- Aimbot -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-crosshairs"></i>
+                    </div>
+                    <div class="feature-title">Aimbot</div>
+                </div>
+                <div class="feature-description">
+                    Fitur auto-aim yang membantu mengunci target musuh. Tingkatkan akurasi tembakan yang dapat mendeteksi headshot.
+                </div>
+                
+                <!-- Aimbot Percentage Slider -->
+                <div class="aimbot-slider-container" id="aimbotSliderContainer">
+                    <div class="aimbot-slider-label">
+                        <span>Kekuatan Aimbot:</span>
+                        <span id="aimbotPercentageValue">20%</span>
+                    </div>
+                    <input type="range" min="5" max="40" value="20" class="aimbot-slider" id="aimbotSlider">
+                    <div class="aimbot-percentage-display" id="aimbotPercentageDisplay">20%</div>
+                </div>
+                
+                <div class="toggle-container">
+                    <div class="toggle-status" id="aimbotStatus">OFF</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="aimbotToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- FixLag -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-tachometer-alt"></i>
+                    </div>
+                    <div class="feature-title">FixFps</div>
+                </div>
+                <div class="feature-description">
+                    Optimalkan kinerja perangkat untuk mengurangi lag dan meningkatkan FPS. Pengalaman gaming yang lebih smooth dan responsif dengan pengaturan performa maksimal untuk perangkat.
+                </div>
+                <div class="toggle-container">
+                    <div class="toggle-status" id="fixlagStatus">OFF</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="fixlagToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- FixJaringan -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-wifi"></i>
+                    </div>
+                    <div class="feature-title">FixJaringan</div>
+                </div>
+                <div class="feature-description">
+                    Stabilkan koneksi jaringan untuk mengurangi ping dan lag jaringan. Optimalkan koneksi internet untuk gameplay yang lebih stabil.
+                </div>
+                <div class="toggle-container">
+                    <div class="toggle-status" id="fixjaringanStatus">OFF</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="fixjaringanToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Headsensi -->
+            <div class="feature-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <div class="feature-title">Headsensi</div>
+                </div>
+                <div class="feature-description">
+                    Sensitivitas khusus untuk headshot. Optimalkan pengaturan sensitivitas Anda untuk meningkatkan akurasi headshot dengan sensitivity curve yang telah dikalibrasi khusus.
+                </div>
+                <div class="toggle-container">
+                    <div class="toggle-status" id="headsensiStatus">OFF</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="headsensiToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+            
+            <!-- Crosshair -->
+            <div class="feature-card crosshair-card">
+                <div class="feature-header">
+                    <div class="feature-icon">
+                        <i class="fas fa-dot-circle"></i>
+                    </div>
+                    <div class="feature-title">Crosshair</div>
+                </div>
+                <div class="feature-description">
+                    Crosshair tetap di tengah layar untuk meningkatkan akurasi tembakan. Tidak akan bergerak meskipun layar disentuh.
+                </div>
+                <div class="crosshair-info">
+                    <i class="fas fa-info-circle"></i> Crosshair tetap aktif meskipun Anda keluar dari halaman ini
+                </div>
+                <div class="toggle-container">
+                    <div class="toggle-status" id="crosshairStatus">OFF</div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="crosshairToggle">
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>Iky SensiFF v1.0 | © 2025 IkyJs | Dev Masih Pemula</p>
+            <p style="margin-top: 10px; color: #00a8ff;">
+                <i class="fas fa-bolt"></i> Optimized Performance
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Elements
+        const loginScreen = document.getElementById('loginScreen');
+        const gameSelectionScreen = document.getElementById('gameSelectionScreen');
+        const dashboard = document.getElementById('dashboard');
+        const passwordInput = document.getElementById('passwordInput');
+        const loginBtn = document.getElementById('loginBtn');
+        const togglePassword = document.getElementById('togglePassword');
+        const errorMsg = document.getElementById('errorMsg');
+        
+        // Game selection elements
+        const ffNormalOption = document.getElementById('ffNormalOption');
+        const ffMaxOption = document.getElementById('ffMaxOption');
+        const gameSelectBtn = document.getElementById('gameSelectBtn');
+        
+        // Dashboard elements
+        const dashboardTitle = document.getElementById('dashboardTitle');
+        const gameVersionText = document.getElementById('gameVersionText');
+        const versionInfo = document.getElementById('versionInfo');
+        
+        // Crosshair overlay
+        const crosshairOverlay = document.getElementById('crosshairOverlay');
+        
+        // Feature toggles
+        const aimbotToggle = document.getElementById('aimbotToggle');
+        const fixlagToggle = document.getElementById('fixlagToggle');
+        const fixjaringanToggle = document.getElementById('fixjaringanToggle');
+        const headsensiToggle = document.getElementById('headsensiToggle');
+        const crosshairToggle = document.getElementById('crosshairToggle');
+        
+        // Aimbot slider
+        const aimbotSlider = document.getElementById('aimbotSlider');
+        const aimbotPercentageValue = document.getElementById('aimbotPercentageValue');
+        const aimbotPercentageDisplay = document.getElementById('aimbotPercentageDisplay');
+        const aimbotSliderContainer = document.getElementById('aimbotSliderContainer');
+        
+        // Status indicators
+        const aimbotStatus = document.getElementById('aimbotStatus');
+        const fixlagStatus = document.getElementById('fixlagStatus');
+        const fixjaringanStatus = document.getElementById('fixjaringanStatus');
+        const headsensiStatus = document.getElementById('headsensiStatus');
+        const crosshairStatus = document.getElementById('crosshairStatus');
+        
+        // Password
+        const correctPassword = "IkySensiV1";
+        
+        // Selected game
+        let selectedGame = "Free Fire Biasa";
+        
+        // Initialize game selection
+        ffNormalOption.addEventListener('click', function() {
+            ffNormalOption.classList.add('active');
+            ffMaxOption.classList.remove('active');
+            selectedGame = "Free Fire Biasa";
+        });
+        
+        ffMaxOption.addEventListener('click', function() {
+            ffMaxOption.classList.add('active');
+            ffNormalOption.classList.remove('active');
+            selectedGame = "Free Fire MAX";
+        });
+        
+        // Toggle password visibility
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            togglePassword.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+        
+        // Login functionality
+        loginBtn.addEventListener('click', function() {
+            const enteredPassword = passwordInput.value;
+            
+            if (enteredPassword === correctPassword) {
+                // Login success - show game selection screen
+                loginScreen.style.opacity = '0';
+                setTimeout(() => {
+                    loginScreen.style.display = 'none';
+                    gameSelectionScreen.style.display = 'flex';
+                    setTimeout(() => {
+                        gameSelectionScreen.style.opacity = '1';
+                    }, 50);
+                    createParticles();
+                }, 500);
+            } else {
+                // Error
+                errorMsg.style.display = 'block';
+                passwordInput.style.borderColor = '#ff4757';
+                passwordInput.value = '';
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                    passwordInput.style.borderColor = '#00a8ff';
+                }, 3000);
+            }
+        });
+        
+        // Allow login with Enter key
+        passwordInput.addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                loginBtn.click();
+            }
+        });
+        
+        // Game selection button
+        gameSelectBtn.addEventListener('click', function() {
+            // Hide game selection screen, show dashboard
+            gameSelectionScreen.style.opacity = '0';
+            setTimeout(() => {
+                gameSelectionScreen.style.display = 'none';
+                dashboard.style.display = 'block';
+                dashboardTitle.textContent = `Iky SensiFF V1 - ${selectedGame}`;
+                gameVersionText.textContent = `Aplikasi ini membantu untuk bermain ${selectedGame}`;
+                updateVersionInfo();
+                
+                // Check if crosshair was previously enabled
+                const crosshairActive = localStorage.getItem('crosshairActive');
+                if (crosshairActive === 'true') {
+                    crosshairToggle.checked = true;
+                    crosshairStatus.textContent = 'ON';
+                    crosshairStatus.classList.add('active');
+                    crosshairOverlay.style.display = 'block';
+                }
+            }, 500);
+        });
+        
+        // Update version info
+        function updateVersionInfo() {
+            const features = [];
+            if (aimbotToggle.checked) features.push(`Aimbot: ${aimbotSlider.value}%`);
+            if (fixlagToggle.checked) features.push('FixFps: ON');
+            if (fixjaringanToggle.checked) features.push('FixJaringan: ON');
+            if (headsensiToggle.checked) features.push('Headsensi: ON');
+            if (crosshairToggle.checked) features.push('Crosshair: ON');
+            
+            if (features.length === 0) features.push('Tidak ada fitur aktif');
+            
+            versionInfo.textContent = `Versi: ${selectedGame} | ${features.join(' | ')}`;
+        }
+        
+        // Aimbot toggle functionality
+        aimbotToggle.addEventListener('change', function() {
+            if (this.checked) {
+                aimbotStatus.textContent = 'ON';
+                aimbotStatus.classList.add('active');
+                aimbotSliderContainer.style.display = 'block';
+                console.log(`Aimbot: ON (${aimbotSlider.value}%)`);
+            } else {
+                aimbotStatus.textContent = 'OFF';
+                aimbotStatus.classList.remove('active');
+                aimbotSliderContainer.style.display = 'none';
+                console.log('Aimbot: OFF');
+            }
+            updateVersionInfo();
+        });
+        
+        // Aimbot slider functionality
+        aimbotSlider.addEventListener('input', function() {
+            const value = this.value;
+            aimbotPercentageValue.textContent = `${value}%`;
+            aimbotPercentageDisplay.textContent = `${value}%`;
+            console.log(`Aimbot strength: ${value}%`);
+            updateVersionInfo();
+        });
+        
+        // FixLag toggle functionality
+        fixlagToggle.addEventListener('change', function() {
+            if (this.checked) {
+                fixlagStatus.textContent = 'ON';
+                fixlagStatus.classList.add('active');
+                console.log('FixLag: ON');
+            } else {
+                fixlagStatus.textContent = 'OFF';
+                fixlagStatus.classList.remove('active');
+                console.log('FixLag: OFF');
+            }
+            updateVersionInfo();
+        });
+        
+        // FixJaringan toggle functionality
+        fixjaringanToggle.addEventListener('change', function() {
+            if (this.checked) {
+                fixjaringanStatus.textContent = 'ON';
+                fixjaringanStatus.classList.add('active');
+                console.log('FixJaringan: ON');
+            } else {
+                fixjaringanStatus.textContent = 'OFF';
+                fixjaringanStatus.classList.remove('active');
+                console.log('FixJaringan: OFF');
+            }
+            updateVersionInfo();
+        });
+        
+        // Headsensi toggle functionality
+        headsensiToggle.addEventListener('change', function() {
+            if (this.checked) {
+                headsensiStatus.textContent = 'ON';
+                headsensiStatus.classList.add('active');
+                console.log('Headsensi: ON');
+            } else {
+                headsensiStatus.textContent = 'OFF';
+                headsensiStatus.classList.remove('active');
+                console.log('Headsensi: OFF');
+            }
+            updateVersionInfo();
+        });
+        
+        // Crosshair toggle functionality
+        crosshairToggle.addEventListener('change', function() {
+            if (this.checked) {
+                crosshairStatus.textContent = 'ON';
+                crosshairStatus.classList.add('active');
+                crosshairOverlay.style.display = 'block';
+                localStorage.setItem('crosshairActive', 'true');
+                console.log('Crosshair: ON');
+            } else {
+                crosshairStatus.textContent = 'OFF';
+                crosshairStatus.classList.remove('active');
+                crosshairOverlay.style.display = 'none';
+                localStorage.setItem('crosshairActive', 'false');
+                console.log('Crosshair: OFF');
+            }
+            updateVersionInfo();
+        });
+        
+        // Create particle background
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            particlesContainer.innerHTML = '';
+            
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.style.position = 'absolute';
+                particle.style.width = Math.random() * 5 + 1 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(${Math.random() * 100 + 155}, ${Math.random() * 100 + 155}, 255, ${Math.random() * 0.5 + 0.2})`;
+                particle.style.borderRadius = '50%';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                
+                particlesContainer.appendChild(particle);
+                
+                // Animate particle
+                animateParticle(particle);
+            }
+        }
+        
+        function animateParticle(particle) {
+            let x = parseFloat(particle.style.left);
+            let y = parseFloat(particle.style.top);
+            let xSpeed = (Math.random() - 0.5) * 0.5;
+            let ySpeed = (Math.random() - 0.5) * 0.5;
+            
+            function move() {
+                x += xSpeed;
+                y += ySpeed;
+                
+                if (x > 100) x = 0;
+                if (x < 0) x = 100;
+                if (y > 100) y = 0;
+                if (y < 0) y = 100;
+                
+                particle.style.left = x + 'vw';
+                particle.style.top = y + 'vh';
+                
+                requestAnimationFrame(move);
+            }
+            
+            move();
+        }
+        
+        // Initialize with some particles in login screen
+        createParticles();
+        
+        // Add some initial console messages
+        console.log('Iky SensiFF Dashboard loaded');
+        console.log('Masih Tahap Pengembangan');
+        console.log('IkyJs', 'color: #ff4757; font-size: 14px; font-weight: bold;');
+    </script>
+</body>
+</html>
